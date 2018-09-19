@@ -1,0 +1,24 @@
+{
+  "name": "gitlab-jira-bridge",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node src/server.js"
+  },
+  "engines" : { "node" : "~10.10" },
+  "author": "DracoBlue <JanS@DracoBlue.de>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "date-fns": "^1.29.0",
+    "debug": "^4.0.1",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "got": "^9.2.1",
+    "nodemon": "^1.18.4"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}
