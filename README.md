@@ -1,6 +1,7 @@
-# Gitlab Jira Webhook
+# Gitlab Jira Webhook [![Build Status](https://travis-ci.com/DracoBlue/gitlab-jira-webhook.svg?branch=master)](https://travis-ci.com/DracoBlue/gitlab-jira-webhook)
 
 This little webhook pushes gitlab events directly to jira as remote links.
+
 
 ## Setup
 
