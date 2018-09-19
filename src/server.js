@@ -119,7 +119,8 @@ app.post('/events', function (req, res) {
     res.send('OK');
 });
 
+var port = process.env.PORT || 3000;
 
-app.listen(3000, function () {
-    debug('listeing on port 3000');
+app.listen(port, function () {
+    debug('listeing on port ' + port);
 });
