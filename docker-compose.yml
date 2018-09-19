@@ -1,0 +1,25 @@
+version: "3"
+services:
+  node-cli:
+    image: node:10.10.0-slim
+    command: bash
+    working_dir: /usr/src/app
+    volumes:
+      - './:/usr/src/app'
+  nodemon:
+    image: node:10.10.0-slim
+    command: node_modules/.bin/nodemon src/server.js -w "src/"
+    working_dir: /usr/src/app
+    environment:
+      - 'DEBUG=bridge:*'
+    volumes:
+      - './:/usr/src/app'
+    ports:
+      - "80:3000"
+  ngrok:
+    image:  wernight/ngrok
+    command: ngrok http nodemon:3000
+    depends_on:
+      - nodemon
+    ports:
+      - "4040"
