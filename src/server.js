@@ -24,8 +24,7 @@ assert(process.env.GITLAB_PERSONAL_ACCESS_TOKEN, "GITLAB_PERSONAL_ACCESS_TOKEN i
 app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
-    parser.print();
-    res.send('Hello World!');
+    res.send('HI!');
 });
 
 app.post('/events', function (req, res) {
