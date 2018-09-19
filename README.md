@@ -2,6 +2,7 @@
 
 This little webhook pushes gitlab events directly to jira as remote links.
 
+![Screenshot](./screenshot.png)
 
 ## Setup
 
