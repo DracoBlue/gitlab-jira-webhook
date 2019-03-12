@@ -1,6 +1,7 @@
 var debug = require('debug')('bridge:JiraRemoteLinkGenerator');
 var url = require('url');
 var formatDate = require('date-fns').format;
+var fs = require('fs');
 var iconUrlMap = JSON.parse(fs.readFileSync((process.env.ICON_URL_PATH || './') + 'icon-url-map.json'));
 
 class JiraRemoteLinkGenerator {
