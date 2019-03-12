@@ -1,0 +1,12 @@
+{
+  "default": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/git-pull-request.png",
+  "closed": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/circle-slash.png",
+  "locked": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/lock.png",
+  "merged": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/git-merge.png",
+  "unchecked": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/clock.png",
+  "can_be_merged": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/checklist.png",
+  "cannot_be_merged": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/alert.png",
+  "pending": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/clock.png",
+  "running": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/server.png",
+  "failed": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/stop.png"
+}

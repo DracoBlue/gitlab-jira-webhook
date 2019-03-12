@@ -1,6 +1,7 @@
 var debug = require('debug')('bridge:JiraRemoteLinkGenerator');
 var url = require('url');
 var formatDate = require('date-fns').format;
+var iconUrlMap = JSON.parse(fs.readFileSync((process.env.ICON_URL_PATH || './') + 'icon-url-map.json'));
 
 class JiraRemoteLinkGenerator {
 
@@ -16,51 +17,51 @@ class JiraRemoteLinkGenerator {
         urlParts.pathname = '';
         urlParts.search = '';
 
-        var objectIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/git-pull-request.png";
+        var objectIconUrl = iconUrlMap["default"];
         var objectTitle = "Open Merge Request";
 
         if (event.mergeState === 'closed') {
             objectTitle = "Canceled Merge Request";
-            objectIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/circle-slash.png";
+            objectIconUrl = iconUrlMap['closed'];
         }
 
         if (event.mergeState === 'locked') {
             objectTitle = "Locked Merge Request";
-            objectIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/lock.png";
+            objectIconUrl = iconUrlMap['locked'];
         }
 
         if (event.mergeState === 'merged') {
-            objectIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/git-merge.png";
+            objectIconUrl = iconUrlMap['merged'];
             objectTitle = "Merged Merge Request";
         }
 
-        var statusIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/clock.png";
+        var statusIconUrl = iconUrlMap['unchecked'];
         var statusTitle = 'Unchecked';
         var statusUrl = event.mergeUrl;
 
         if (event.mergeStatus === 'can_be_merged') {
-            statusIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/checklist.png";
+            statusIconUrl = iconUrlMap['can_be_merged'];
             statusTitle = 'Can be Merged';
         }
 
         if (event.mergeStatus === 'cannot_be_merged') {
-            statusIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/alert.png";
+            statusIconUrl = iconUrlMap['cannot_be_merged'];
             statusTitle = 'Cannot be Merged';
         }
 
         if (event.pipelineStatus && event.pipelineUrl) {
             if (event.pipelineStatus === "pending") {
-                statusIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/clock.png";
+                statusIconUrl = iconUrlMap['pending'];
                 statusTitle = 'Pipeline pending';
                 statusUrl = event.pipelineUrl;
             }
             if (event.pipelineStatus === "running") {
-                statusIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/server.png";
+                statusIconUrl = iconUrlMap['running'];
                 statusTitle = 'Pipeline running';
                 statusUrl = event.pipelineUrl;
             }
             if (event.pipelineStatus === "failed") {
-                statusIconUrl = "https://raw.githubusercontent.com/webdog/octicons-png/master/black/stop.png";
+                statusIconUrl = iconUrlMap['failed'];
                 statusTitle = 'Pipeline failed';
                 statusUrl = event.pipelineUrl;
             }
