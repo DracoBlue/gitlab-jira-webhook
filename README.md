@@ -56,6 +56,13 @@ $ docker run --rm --env-file .env -p80:3000 dracoblue/gitlab-jira-webhook
 Now your merge requests should be visible whenever your reference a ticket with TEST-1234 at the
 ticket.
 
+## Private Icon Url Map
+
+By default icons will be loaded from `https://raw.githubusercontent.com/webdog/octicons-png/master/black/*`.
+
+If you want to override the file, configure it with the `ICON_URL_PATH` and store the file `icon-url-map.json` of this
+repository at a different place next to the storage.
+
 ## Tricky Implementation Details
 
 - Jira: Jira shows only the last 5 (remote) links for an issue
