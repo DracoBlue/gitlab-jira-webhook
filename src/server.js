@@ -23,8 +23,14 @@ assert(process.env.GITLAB_PERSONAL_ACCESS_TOKEN, "GITLAB_PERSONAL_ACCESS_TOKEN i
 
 app.use(bodyParser.json());
 
+app.use(function (req, res, next) {
+    res.header('X-App-Version', process.env.APP_VERSION);
+    res.header('X-App-Name', 'gitlab-jira-webhook');
+    next();
+});
+
 app.get('/', function (req, res) {
-    res.send('HI!');
+    res.send('OK');
 });
 
 app.post('/events', function (req, res) {
@@ -121,5 +127,5 @@ app.post('/events', function (req, res) {
 var port = process.env.PORT || 3000;
 
 app.listen(port, function () {
-    debug('listeing on port ' + port);
+    debug('listening on port ' + port);
 });
