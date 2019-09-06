@@ -7,7 +7,9 @@
     "test": "jest",
     "start": "node src/server.js"
   },
-  "engines" : { "node" : "~10.10" },
+  "engines": {
+    "node": "~10.10"
+  },
   "author": "DracoBlue <JanS@DracoBlue.de>",
   "license": "MIT",
   "dependencies": {

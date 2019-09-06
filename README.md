@@ -6,9 +6,9 @@ This little webhook pushes gitlab events directly to jira as remote links.
 
 ## Setup
 
-### Create a .env-File
+### 1. Create a .env-File
 
-#### a) Jira with Username + Password
+### 2. a) Jira with Username + Password
 
 .env:
 ```
@@ -20,7 +20,7 @@ JIRA_USERNAME=jirauser
 JIRA_PASSWORD=thepassword
 ```
 
-#### b) Jira with P12/PFX
+### 2. b) Jira with P12/PFX
 
 .env:
 ```
@@ -32,11 +32,18 @@ JIRA_PFX_PASSWORD=ThePassword
 JIRA_BASE_URL=https://jira.example.org
 ```
 
-### Install Nodejs + Run the Service
+### 3. a) Run with Nodejs + Run the Service
 
 ```console
 $ npm install
 $ npm start
+```
+
+
+### 3. b) Run with Docker
+
+```console
+$ docker run --rm --env-file .env -p80:3000 dracoblue/gitlab-jira-webhook
 ```
 
 ### Setup a Webhook in Gitlab
