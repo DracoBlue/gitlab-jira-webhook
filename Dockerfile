@@ -11,6 +11,7 @@ ENV APP_VERSION $APP_VERSION
 ADD ./src /usr/src/app/src
 ADD ./package.json /usr/src/app/
 ADD ./package-lock.json /usr/src/app/
+ADD ./icon-url-map.json /usr/src/app/
 RUN npm install
 EXPOSE 3000
 
