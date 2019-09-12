@@ -19,7 +19,8 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "got": "^9.2.1",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "tunnel": "0.0.6"
   },
   "devDependencies": {
     "jest": "^24.9.0"

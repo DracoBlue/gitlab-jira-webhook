@@ -7,6 +7,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var debug = require('debug')('bridge:server');
+var tunnel = require('tunnel');
 
 var GitlabEventParser = require('./GitlabEventParser');
 var parser = new GitlabEventParser();
@@ -79,6 +80,17 @@ app.post('/events', function (req, res) {
                 options.passphrase = process.env.JIRA_PFX_PASSWORD;
             }
 
+            if (process.env.JIRA_HTTPS_PROXY) {
+                var urlParts = require('url').parse(process.env.JIRA_HTTPS_PROXY);
+                options.agent = tunnel.httpsOverHttp({
+                    proxy: {
+                        host: urlParts.hostname,
+                        port: urlParts.port,
+                        proxyAuth: urlParts.auth,
+                    }
+                });
+            }
+
             got.post(process.env.JIRA_BASE_URL + '/rest/api/latest/issue/'+ ticketId +'/remotelink', options).then((response) => {
                 debug(response.body);
             });
@@ -109,6 +121,7 @@ app.post('/events', function (req, res) {
         var projectId = req.body.project.id;
         var rawProject = req.body.project;
         var commitId = req.body.commit.id;
+
         got.get(process.env.GITLAB_BASE_URL + '/api/v4/projects/' + projectId + '/repository/commits/'+ commitId +'/merge_requests', {
             json: true,
             headers: {

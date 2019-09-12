@@ -32,6 +32,11 @@ JIRA_PFX_PASSWORD=ThePassword
 JIRA_BASE_URL=https://jira.example.org
 ```
 
+If you need to setup a https proxy, use:
+```
+JIRA_HTTPS_PROXY=http://username:password@proxy.example.org:3128
+```
+
 ### 3. a) Run with Nodejs + Run the Service
 
 ```console
