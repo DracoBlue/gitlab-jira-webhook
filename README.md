@@ -1,6 +1,9 @@
-# Gitlab Jira Webhook [![Build Status](https://travis-ci.com/DracoBlue/gitlab-jira-webhook.svg?branch=master)](https://travis-ci.com/DracoBlue/gitlab-jira-webhook)
+# GitLab Jira Webhook [![Build Status](https://travis-ci.com/DracoBlue/gitlab-jira-webhook.svg?branch=master)](https://travis-ci.com/DracoBlue/gitlab-jira-webhook)
 
-This little webhook pushes gitlab events directly to jira as remote links.
+This little webhook pushes GitLab events directly to Jira, so they are displayed in Jira tickets as remote links to the GitLab Merge Request.
+
+
+In Jira it looks like this:
 
 ![Screenshot](./screenshot.png)
 
@@ -53,7 +56,7 @@ $ docker run --rm --env-file .env -p80:3000 dracoblue/gitlab-jira-webhook
 
 ### Setup a Webhook in Gitlab
 
-1. Set Url to http://example.org/events if your Webhook runs on http://example.org.
+1. Set URL to http://example.org/events if your Webhook runs on http://example.org.
 2. Set the token to something, which you will configured in `GITLAB_WEBHOOK_TOKEN`.
 
 ### That's it!
@@ -63,16 +66,17 @@ ticket.
 
 ## Private Icon Url Map
 
-By default icons will be loaded from `https://raw.githubusercontent.com/webdog/octicons-png/master/black/*`.
+By default all icons will be loaded from [`https://raw.githubusercontent.com/webdog/octicons-png/master/black/*`](https://github.com/webdog/octicons-png/tree/master/black).
 
-If you want to override the file, configure it with the `ICON_URL_PATH` and store the file `icon-url-map.json` of this
-repository at a different place next to the storage.
+If you want to override the file, configure it with the `ICON_URL_PATH` and store the file
+[`icon-url-map.json`](icon-url-map.json)
+of this repository at a different place next to the storage.
 
 ## Tricky Implementation Details
 
 - Jira: Jira shows only the last 5 (remote) links for an issue
-  - Thus you shouldn't add to many merge requests to one Ticket
-- Gitlab: If on first push the merge is conflicted: the merge event does not appear!
+  - Thus you shouldn't add too many merge requests to one Ticket
+- GitLab: If on first push the merge is conflicted: the merge event does not appear!
   - Thus we fetch the merge request again as soon as a pipeline finishes.
 
 ## License
