@@ -27,12 +27,6 @@
             "required": true,
             "order": 5
         },
-        "JIRA_HTTPS_PROXY": {
-            "description": "If your jira is only accessible via a proxy, feel free to add it here.",
-            "required": false,
-            "value": "",
-            "order": 6
-        },
         "GITLAB_WEBHOOK_TOKEN": {
             "description": "The secret token, which will be configured on gitlab to make the connection possible.",
             "generator": "secret",
