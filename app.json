@@ -4,31 +4,39 @@
 
         "GITLAB_BASE_URL": {
             "description": "Configure the base url for gitlab (without trailing slash).",
-            "required": false
+            "required": true,
+            "order": 1
         },
         "GITLAB_PERSONAL_ACCESS_TOKEN": {
             "description": "Configure the access token to access gitlab.",
-            "required": false
+            "required": true,
+            "order": 2
         },
         "JIRA_BASE_URL": {
             "description": "Configure the base url for jira (without trailing slash).",
-            "required": false
+            "required": true,
+            "order": 3
         },
         "JIRA_USERNAME": {
             "description": "Configure the username of the jira account.",
-            "required": false
+            "required": true,
+            "order": 4
         },
         "JIRA_PASSWORD": {
             "description": "Configure the password of the jira account.",
-            "required": false
+            "required": true,
+            "order": 5
         },
         "JIRA_HTTPS_PROXY": {
             "description": "If your jira is only accessible via a proxy, feel free to add it here.",
-            "required": false
+            "required": false,
+            "value": "",
+            "order": 6
         },
         "GITLAB_WEBHOOK_TOKEN": {
             "description": "The secret token, which will be configured on gitlab to make the connection possible.",
-            "generator": "secret"
+            "generator": "secret",
+            "order": 7
         }
     },
     "options": {
