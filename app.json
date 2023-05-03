@@ -1,0 +1,38 @@
+{
+    "name": "gitlab-jira-webhook",
+    "env": {
+
+        "GITLAB_BASE_URL": {
+            "description": "Configure the base url for gitlab (without trailing slash).",
+            "required": false
+        },
+        "GITLAB_PERSONAL_ACCESS_TOKEN": {
+            "description": "Configure the access token to access gitlab.",
+            "required": false
+        },
+        "JIRA_BASE_URL": {
+            "description": "Configure the base url for jira (without trailing slash).",
+            "required": false
+        },
+        "JIRA_USERNAME": {
+            "description": "Configure the username of the jira account.",
+            "required": false
+        },
+        "JIRA_PASSWORD": {
+            "description": "Configure the password of the jira account.",
+            "required": false
+        },
+        "JIRA_HTTPS_PROXY": {
+            "description": "If your jira is only accessible via a proxy, feel free to add it here.",
+            "required": false
+        },
+        "GITLAB_WEBHOOK_TOKEN": {
+            "description": "The secret token, which will be configured on gitlab to make the connection possible.",
+            "generator": "secret"
+        }
+    },
+    "options": {
+        "allow-unauthenticated": true,
+        "max-instances": 1
+    }
+}
