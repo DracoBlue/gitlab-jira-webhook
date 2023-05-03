@@ -64,6 +64,10 @@ $ docker run --rm --env-file .env -p80:3000 dracoblue/gitlab-jira-webhook
 Now your merge requests should be visible whenever your reference a ticket with TEST-1234 at the
 ticket.
 
+## Deploy to Google
+
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
+
 ## Private Icon Url Map
 
 By default all icons will be loaded from [`https://raw.githubusercontent.com/webdog/octicons-png/master/black/*`](https://github.com/webdog/octicons-png/tree/master/black).
