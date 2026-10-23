@@ -1,0 +1,5 @@
+*
+!package.json
+!package-lock.json
+!icon-url-map.json
+!src/

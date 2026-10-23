@@ -1,65 +1,61 @@
-var debug = require('debug')('bridge:GitlabEventParser');
-var GitlabEvent = require('./GitlabEvent');
+/**
+ * Maps the deprecated `merge_status` values onto `detailed_merge_status`,
+ * for merge requests that don't have the detailed field.
+ */
+const LEGACY_MERGE_STATUS = {
+    can_be_merged: 'mergeable',
+    cannot_be_merged: 'conflict',
+    cannot_be_merged_recheck: 'checking',
+    cannot_be_merged_rechecking: 'checking',
+    checking: 'checking',
+    unchecked: 'unchecked',
+};
 
-class GitlabEventParser {
-
-    constructor () {
-        debug('created')
-    }
-
-    parseEvent (rawEvent) {
-        debug('parse ', rawEvent.object_kind);
-
-        let gitlabEvent = new GitlabEvent();
-
-        gitlabEvent.type = rawEvent.object_kind;
-        gitlabEvent.targetProjectId = rawEvent.object_attributes.target.id;
-        gitlabEvent.targetPath = rawEvent.object_attributes.target.path_with_namespace;
-        gitlabEvent.targetUrl = rawEvent.object_attributes.target.web_url;
-        gitlabEvent.targetBranch = rawEvent.object_attributes.target_branch;
-        gitlabEvent.sourceBranch = rawEvent.object_attributes.source_branch;
-        gitlabEvent.mergeTitle = rawEvent.object_attributes.title;
-        gitlabEvent.mergeDescription = rawEvent.object_attributes.description;
-        gitlabEvent.mergeStatus = rawEvent.object_attributes.merge_status;
-        gitlabEvent.mergeId = rawEvent.object_attributes.id;
-        gitlabEvent.mergeState = rawEvent.object_attributes.state;
-        gitlabEvent.updatedAt = rawEvent.object_attributes.updated_at;
-        gitlabEvent.mergeUrl = rawEvent.object_attributes.url;
-        gitlabEvent.pipelineId = rawEvent.object_attributes.head_pipeline_id;
-        gitlabEvent.pipelineBadgeUrl = rawEvent.object_attributes.source.web_url + "/badges/" + gitlabEvent.sourceBranch + "/pipeline.svg";
-        gitlabEvent.shortcut = "!" + rawEvent.object_attributes.iid;
-        gitlabEvent.isWorkInProgress = rawEvent.object_attributes.work_in_progress;
-
-        return gitlabEvent;
-    }
-
-    parseMergeRequestAndTargetProject (rawMergeRequest, rawTargetProject) {
-        let gitlabEvent = new GitlabEvent();
-
-        gitlabEvent.type = "merge_request";
-        gitlabEvent.targetProjectId = rawMergeRequest.project_id;
-        gitlabEvent.targetPath = rawTargetProject.path_with_namespace;
-        gitlabEvent.targetUrl = rawTargetProject.web_url;
-        gitlabEvent.targetBranch = rawMergeRequest.target_branch;
-        gitlabEvent.sourceBranch = rawMergeRequest.source_branch;
-        gitlabEvent.mergeTitle = rawMergeRequest.title;
-        gitlabEvent.mergeDescription = rawMergeRequest.description;
-        gitlabEvent.mergeStatus = rawMergeRequest.merge_status;
-        gitlabEvent.mergeId = rawMergeRequest.id;
-        gitlabEvent.mergeState = rawMergeRequest.state;
-        gitlabEvent.updatedAt = rawMergeRequest.updated_at;
-        gitlabEvent.mergeUrl = rawMergeRequest.web_url;
-        if (rawMergeRequest.pipeline) {
-            gitlabEvent.pipelineId = rawMergeRequest.pipeline.id;
-            gitlabEvent.pipelineStatus = rawMergeRequest.pipeline.status;
-            gitlabEvent.pipelineUrl = rawTargetProject.web_url + "/pipelines/" + gitlabEvent.pipelineId;
-        }
-        gitlabEvent.shortcut = "!" + rawMergeRequest.iid;
-        gitlabEvent.isWorkInProgress = rawMergeRequest.work_in_progress;
-
-        return gitlabEvent;
-    }
-
+/** "group/project!12" -> "group/project" */
+function pathFromReference(reference) {
+    const index = reference?.lastIndexOf('!') ?? -1;
+    return index > 0 ? reference.slice(0, index) : undefined;
 }
 
-module.exports = GitlabEventParser;
+/** ".../group/project/-/merge_requests/12" -> ".../group/project" */
+function projectUrlFromMergeRequestUrl(webUrl) {
+    const match = /^(.*?)(?:\/-)?\/merge_requests\/\d+\/?$/.exec(webUrl ?? '');
+    return match ? match[1] : undefined;
+}
+
+/**
+ * Turns a merge request from the GitLab REST API (GET /projects/:id/merge_requests/:iid)
+ * into the flat event that the link generator and ticket extractor work with.
+ *
+ * @param {object} mergeRequest REST API merge request
+ * @param {object} [targetProject] project of the merge request, used when the request lacks path information
+ */
+export function parseMergeRequest(mergeRequest, targetProject) {
+    const targetUrl = projectUrlFromMergeRequestUrl(mergeRequest.web_url) ?? targetProject?.web_url;
+    const event = {
+        type: 'merge_request',
+        shortcut: '!' + mergeRequest.iid,
+        targetProjectId: mergeRequest.project_id ?? mergeRequest.target_project_id,
+        targetPath: pathFromReference(mergeRequest.references?.full) ?? targetProject?.path_with_namespace,
+        targetUrl,
+        targetBranch: mergeRequest.target_branch,
+        sourceBranch: mergeRequest.source_branch,
+        mergeTitle: mergeRequest.title,
+        mergeDescription: mergeRequest.description,
+        mergeStatus: mergeRequest.detailed_merge_status ?? LEGACY_MERGE_STATUS[mergeRequest.merge_status] ?? mergeRequest.merge_status,
+        mergeId: mergeRequest.id,
+        mergeState: mergeRequest.state,
+        isDraft: Boolean(mergeRequest.draft ?? mergeRequest.work_in_progress),
+        updatedAt: mergeRequest.updated_at,
+        mergeUrl: mergeRequest.web_url,
+    };
+
+    const pipeline = mergeRequest.head_pipeline ?? mergeRequest.pipeline;
+    if (pipeline) {
+        event.pipelineId = pipeline.id;
+        event.pipelineStatus = pipeline.status;
+        event.pipelineUrl = pipeline.web_url ?? (targetUrl && `${targetUrl}/-/pipelines/${pipeline.id}`);
+    }
+
+    return event;
+}

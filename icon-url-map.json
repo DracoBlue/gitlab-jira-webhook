@@ -6,7 +6,13 @@
   "unchecked": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/clock.png",
   "can_be_merged": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/checklist.png",
   "cannot_be_merged": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/alert.png",
+  "need_rebase": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/sync.png",
+  "draft": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/pencil.png",
+  "needs_review": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/eye.png",
+  "discussions": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/comment-discussion.png",
+  "blocked": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/shield.png",
   "pending": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/clock.png",
   "running": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/server.png",
-  "failed": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/stop.png"
+  "failed": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/stop.png",
+  "canceled": "https://raw.githubusercontent.com/webdog/octicons-png/master/black/x.png"
 }

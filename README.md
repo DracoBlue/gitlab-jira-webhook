@@ -1,88 +1,73 @@
-# GitLab Jira Webhook [![Build Status](https://travis-ci.com/DracoBlue/gitlab-jira-webhook.svg?branch=master)](https://travis-ci.com/DracoBlue/gitlab-jira-webhook)
+# GitLab Jira Webhook
 
-This little webhook pushes GitLab events directly to Jira, so they are displayed in Jira tickets as remote links to the GitLab Merge Request.
-
+Shows GitLab merge requests on the Jira Cloud issues they mention, as web links with the current
+state: open, draft, needs rebase, pipeline running/failed, merged, closed.
 
 In Jira it looks like this:
 
 ![Screenshot](./screenshot.png)
 
-## Setup
+A merge request is linked to every issue key (`PROJ-123`) found in its source branch, title or
+description. Each link is updated in place whenever the merge request or its pipeline changes.
 
-### 1. Create a .env-File
+Version 2 is a modernization: Node 24, current GitLab and Jira Cloud APIs, no crash on API errors,
+verified TLS. See [docs/DESIGN.md](docs/DESIGN.md) for how it works and what changed, and
+[Upgrading from 1.x](#upgrading-from-1x) below.
 
-### 2. a) Jira with Username + Password
+## Quick start
 
-.env:
-```
-GITLAB_PERSONAL_ACCESS_TOKEN=jashdjsahdsjadsas
-GITLAB_BASE_URL=https://git.example.org
-GITLAB_WEBHOOK_TOKEN=TheToken
-JIRA_BASE_URL=https://jira.example.org
-JIRA_USERNAME=jirauser
-JIRA_PASSWORD=thepassword
-```
+1. Create an Atlassian API token for the Jira account that should create the links
+   (<https://id.atlassian.com/manage-profile/security/api-tokens>). The account needs *Browse
+   projects* and *Link issues*.
+2. Create a GitLab token with `read_api` that can see the projects.
+3. Configure, e.g. in `.env`:
 
-### 2. b) Jira with P12/PFX
+   ```
+   GITLAB_BASE_URL=https://git.example.org
+   GITLAB_TOKEN=glpat-...
+   GITLAB_WEBHOOK_TOKEN=<random secret>
+   JIRA_BASE_URL=https://example.atlassian.net
+   JIRA_EMAIL=gitlab-bot@example.org
+   JIRA_API_TOKEN=...
+   JIRA_PROJECT_KEYS=PROJ,OPS
+   ```
 
-.env:
-```
-GITLAB_PERSONAL_ACCESS_TOKEN=jashdjsahdsjadsas
-GITLAB_BASE_URL=https://git.example.org
-GITLAB_WEBHOOK_TOKEN=TheToken
-JIRA_PFX_PATH=./user_key.p12
-JIRA_PFX_PASSWORD=ThePassword
-JIRA_BASE_URL=https://jira.example.org
-```
+   All options are in [deploy/app.env.example](deploy/app.env.example) and
+   [docs/DESIGN.md](docs/DESIGN.md#configuration).
+4. Run it:
 
-If you need to setup a https proxy, use:
-```
-JIRA_HTTPS_PROXY=http://username:password@proxy.example.org:3128
-```
+   ```console
+   $ docker build -t gitlab-jira-webhook .
+   $ docker run --rm --env-file .env -p 3000:3000 gitlab-jira-webhook
+   ```
 
-### 3. a) Run with Nodejs + Run the Service
+   or without Docker (Node 24+): `npm ci && npm start`. Then `npm run check` verifies the
+   credentials.
+5. In GitLab, add a project webhook: URL `https://<host>/events`, secret token =
+   `GITLAB_WEBHOOK_TOKEN`, triggers *Merge request events* and *Pipeline events*.
+
+To run it next to a GitLab Omnibus installation (install, register hooks on many projects, update,
+roll back), see [docs/DEPLOY.md](docs/DEPLOY.md).
+
+## Upgrading from 1.x
+
+- Jira Cloud only: `JIRA_USERNAME`/`JIRA_PASSWORD` become `JIRA_EMAIL`/`JIRA_API_TOKEN` (an API
+  token, not the password). The old names still work and log a deprecation warning.
+- `GITLAB_PERSONAL_ACCESS_TOKEN` is now `GITLAB_TOKEN` (old name still works).
+- `JIRA_PFX_*` are removed. `JIRA_HTTPS_PROXY` is replaced by `HTTPS_PROXY` + `NODE_USE_ENV_PROXY=1`.
+- TLS is verified. For a GitLab with a private CA set `NODE_EXTRA_CA_CERTS`.
+- `ICON_URL_PATH` (directory) became `ICON_URL_MAP_PATH` (file). `STORE_EVENTS` became `STORE_EVENTS_DIR`.
+- Existing links are updated, not duplicated: the link id format is unchanged.
+
+## Development
 
 ```console
-$ npm install
-$ npm start
+$ npm ci
+$ npm test          # node:test, no external services needed
+$ npm run dev       # restarts on changes, reads .env
 ```
-
-
-### 3. b) Run with Docker
-
-```console
-$ docker run --rm --env-file .env -p80:3000 dracoblue/gitlab-jira-webhook
-```
-
-### Setup a Webhook in Gitlab
-
-1. Set URL to http://example.org/events if your Webhook runs on http://example.org.
-2. Set the token to something, which you will configured in `GITLAB_WEBHOOK_TOKEN`.
-
-### That's it!
-
-Now your merge requests should be visible whenever your reference a ticket with TEST-1234 at the
-ticket.
-
-## Deploy to Google
-
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
-
-## Private Icon Url Map
-
-By default all icons will be loaded from [`https://raw.githubusercontent.com/webdog/octicons-png/master/black/*`](https://github.com/webdog/octicons-png/tree/master/black).
-
-If you want to override the file, configure it with the `ICON_URL_PATH` and store the file
-[`icon-url-map.json`](icon-url-map.json)
-of this repository at a different place next to the storage.
-
-## Tricky Implementation Details
-
-- Jira: Jira shows only the last 5 (remote) links for an issue
-  - Thus you shouldn't add too many merge requests to one Ticket
-- GitLab: If on first push the merge is conflicted: the merge event does not appear!
-  - Thus we fetch the merge request again as soon as a pipeline finishes.
 
 ## License
 
-This work is copyright by DracoBlue (<http://dracoblue.net>) and licensed under the terms of MIT License.
+This work is copyright by DracoBlue (<http://dracoblue.net>) and licensed under the terms of MIT
+License, see [LICENSE](LICENSE).

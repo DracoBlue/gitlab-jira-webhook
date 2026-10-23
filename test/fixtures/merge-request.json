@@ -1,0 +1,35 @@
+{
+  "id": 10844,
+  "iid": 6,
+  "project_id": 1422,
+  "title": "server test again",
+  "description": "Closes TEST-12345",
+  "state": "opened",
+  "created_at": "2018-09-16T14:23:46.617Z",
+  "updated_at": "2018-09-16T14:25:48.937Z",
+  "target_branch": "main",
+  "source_branch": "feature/TEST-12345-added-other-test",
+  "source_project_id": 1422,
+  "target_project_id": 1422,
+  "draft": false,
+  "work_in_progress": false,
+  "merge_status": "can_be_merged",
+  "detailed_merge_status": "mergeable",
+  "sha": "db65b6547005d154c23bdb42152577c2c6b8e10f",
+  "references": {
+    "short": "!6",
+    "relative": "!6",
+    "full": "example/jira-test!6"
+  },
+  "web_url": "https://git.example.org/example/jira-test/-/merge_requests/6",
+  "head_pipeline": {
+    "id": 38537,
+    "iid": 12,
+    "project_id": 1422,
+    "sha": "db65b6547005d154c23bdb42152577c2c6b8e10f",
+    "ref": "feature/TEST-12345-added-other-test",
+    "status": "success",
+    "source": "push",
+    "web_url": "https://git.example.org/example/jira-test/-/pipelines/38537"
+  }
+}

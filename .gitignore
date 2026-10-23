@@ -1,4 +1,9 @@
 /node_modules
 /.idea
+/.vscode
 /data
 /.env
+/deploy/deploy.env
+/deploy/app.env
+/deploy/projects.txt
+/deploy/.previous-image
